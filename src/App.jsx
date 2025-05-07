@@ -47,7 +47,7 @@ const App = () => {
             type="text"
             onChange={onChangeHandler}
             value={search1}
-            className="w-[80%] p-2 rounded-lg border border-amber-400 text-sm sm:text-base"
+            className="w-[80%] p-2 rounded-lg border border-blue-700 text-sm sm:text-base outline-none"
             placeholder="Enter city name..."
           />
           <button
