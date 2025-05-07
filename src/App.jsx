@@ -9,28 +9,37 @@ const App = () => {
   const dispatch = useDispatch()
   const [myData, setMyData] = useState(null)
   const [error, setError] = useState('')
+  const [loading,setLoading]=useState(false)
+
   const API_key = '2f01cdf66a6878e927ff2b053ec417e7'
   const API = `https://api.openweathermap.org/data/2.5/weather?q=${search1}&appid=${API_key}&units=metric`
   const fetchWeather = async () => {
     if (!search1.trim()) {
       setError('please enter a city name')
     }
-    try {
-      setError(null)
-      const res = await axios.get(API)
-      setMyData(res.data)
-
-    } catch (error) {
-      setMyData(null)
-      if (error.response.status === 404) {
-        setError("City not found. Please check the spelling.");
-      }
-      else {
-        setError("Something went wrong. Please try again.");
-      }
+    setError(null)
+    
+      
+  try {
+    const res = await axios.get(API);
+    setMyData(res.data);
+  } 
+  catch (error) {
+    setMyData(null);
+    if (error.response.status === 404) {
+      setError("City not found. Please check the spelling.");
+    } else {
+      setError("Something went wrong. Please try again.");
     }
   }
-  useEffect(() => { fetchWeather() }, [])
+   finally {
+    setLoading(false);
+  }
+    
+  }
+  useEffect(() => { 
+    fetchWeather() 
+  }, [])
 
   const onChangeHandler = (e) => {
     dispatch(setSearchQuery(e.target.value))
@@ -41,7 +50,10 @@ const App = () => {
   }
   return (
     <div className='bg-blue-200 min-h-screen '>
-      <div className=" flex flex-col items-center pt-[25vh] ">
+      <div className=" flex flex-col items-center pt-[20vh] ">
+      <h1 className="text-3xl sm:text-4xl font-bold text-blue-800 mb-12 text-center">
+        Weather Forecast App
+      </h1>
         <div className=" container flex items-center justify-center w-full max-w-md gap-2">
           <input
             type="text"
@@ -52,6 +64,7 @@ const App = () => {
           />
           <button
             onClick={onClickHandler}
+            disabled={loading}
             className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
           >
             <FaSearch />
@@ -70,9 +83,9 @@ const App = () => {
               alt="Weather icon"
               className="w-20 h-20"
             />
-            <h2 className="text-xl sm:text-2xl font-semibold">{myData.name}</h2>
-            <p className="text-lg sm:text-xl">{Math.trunc(myData.main.temp)}°C</p>
-            <p className="text-sm sm:text-base text-gray-600 capitalize">
+            <h2 className="text-xl sm:text-3xl font-semibold">{myData.name}</h2>
+            <p className="text-lg sm:text-2xl">{Math.trunc(myData.main.temp)}°C</p>
+            <p className="text-sm sm:text-base capitalize">
               Condition: {myData.weather[0].description}
             </p>
           </div>
